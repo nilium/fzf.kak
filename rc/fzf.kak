@@ -205,10 +205,8 @@ fzf -params .. %{ evaluate-commands %sh{
     if [ -n "${kak_client_env_TMUX}" ]; then
         # set default height if not set already
         [ -z "${tmux_height}" ] && tmux_height=${kak_opt_fzf_tmux_height:-}
-        # if height contains `%' then `-p' will be used
-        [ -n "${tmux_height%%*%}" ] && measure="-l" || measure="-p"
         # `terminal' doesn't support any kind of width and height parameters, so tmux panes are created by tmux itself
-        cmd="nop %sh{ command tmux split-window -t '${kak_client_env_TMUX_PANE:-}' ${measure} ${tmux_height%%%*} env ${fzfcmd} < /dev/null > /dev/null 2>&1 }"
+        cmd="nop %sh{ command tmux display-popup -E -t '${kak_client_env_TMUX_PANE:-}' ${tmux_height:+-h "${tmux_height}"} env ${fzfcmd} < /dev/null > /dev/null 2>&1 }"
     else
         cmd="${kak_opt_fzf_terminal_command%% *} %{${fzfcmd}}"
     fi
